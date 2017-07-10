@@ -34,7 +34,7 @@ function Copy-Directory
                 HelpMessage="File name. or pattern to exlude from copy operation")]
         [string]$Exlude,
 
-        [Parameter()]
+        [Parameter(HelpMessage = "Path to error log")]
         [string]$ErrorLogFilePath = $Logfile
     )
     BEGIN 
