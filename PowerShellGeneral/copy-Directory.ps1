@@ -4,23 +4,21 @@
 .DESCRIPTION
    Accepts Source, and target directory
 .EXAMPLE
-   Copy -Source c:\Example1 -Target C:\Exampe2
+   (Get-ChildItem -Recurse -Depth 1 -Directory).FullName | Copy-Directory -SourceDirectory C:\Source
 .INPUTS
-   Source directory, and target directory.
 .OUTPUTS
    With verbose switch success or failure of operation.  
 .NOTES
    General notes
-.COMPONENT
    The component this cmdlet belongs to
 .ROLE
    The role this cmdlet belongs to
-.FUNCTIONALITY
-   The functionality that best describes this cmdlet
 #>
-function Copy-Directory (OptionalParameters) 
+
+$Logfile = "C:\error.txt"
+function Copy-Directory 
 {
-    Begin
+    [CmdletBinding(SupportsShouldProcess = $True,ConfirmImpact = 'High')]
     param(
         [Parameter(Mandatory=$True,
             HelpMessage="The full path to source directory")]
@@ -43,6 +41,7 @@ function Copy-Directory (OptionalParameters)
     )
     BEGIN 
     {
+        
         $ErrorsHappened = $False
         Remove-Item -Path $ErrorLogFilePath -Force -ErrorAction SilentlyContinue
         if (!(Test-Path $SourceDirectory ))
@@ -57,42 +56,50 @@ function Copy-Directory (OptionalParameters)
         }    
         $ErrorsHappened = $False
     }
-    PROCESS {
+    PROCESS 
+    {
         Write-Verbose "HERE WE GO!!!!"
-        foreach ($Directory in $TargetDirectory)
-        {
-            try 
-            {   
-
-                Write-Verbose "------------------------------"
-                Write-Verbose "Starting to cop to $TargetDirectory"
-                if ((Test-Path $TargetDirectory ))
-                {
-                    $DirList = Get-ChildItem $SourceDirectory -Recurse -Exclude $exclude 
-                    $DirList| Copy-Item -Destination {Join-Path $TargetDirectory $_.FullName.Substring($SourceDirectory.length)}    
-                }   
-                Else
-                {
-                     Write-Verbose "$TargetDirectory not found"
-                    "Target $TargetDirectory not found"| Out-File $ErrorLogFilePath -Append
-                    $ErrorsHappened = $True
-                }
-                
-                
-
-            } 
-            catch 
+        if($PSCmdlet.ShouldProcess("Copy from $SourceDirectory to $TargetDirectory"))
+        {  
+          
+        
+            foreach ($Directory in $TargetDirectory)
             {
+                try 
+                {   
 
-                Write-Verbose "Couldn't vopy to $TargetDirectory"
-                "Failed to copy to $TargetDirectory" | Out-File $ErrorLogFilePath -Append
-                $ErrorsHappened = $True
-            } 
+                    Write-Verbose "------------------------------"
+                    Write-Verbose "Starting to cop to $TargetDirectory"
+                    if ((Test-Path $TargetDirectory ))
+                    {
+                        $DirList = Get-ChildItem $SourceDirectory -Recurse -Exclude $exclude 
+                        $DirList| Copy-Item -Destination {Join-Path $TargetDirectory $_.FullName.Substring($SourceDirectory.length)}    
+                    }   
+                    Else
+                    {
+                         Write-Verbose "$TargetDirectory not found"
+                        "Target $TargetDirectory not found"| Out-File $ErrorLogFilePath -Append
+                        $ErrorsHappened = $True
+                    }
+                
+                
+
+                } 
+                catch 
+                {
+
+                    Write-Verbose "Couldn't vopy to $TargetDirectory"
+                    "Failed to copy to $TargetDirectory" | Out-File $ErrorLogFilePath -Append
+                    $ErrorsHappened = $True
+                } 
+            }
         }
     }
-    END {
-        if ($ErrorsHappened) {
-            Write-Warning "OMG, errors. Logged to $ErrorLogFilePath."
+    END 
+    {
+        if ($ErrorsHappened) 
+        {
+            Write-Warning "Errors Logged to $ErrorLogFilePath."
         }
     }
 }
