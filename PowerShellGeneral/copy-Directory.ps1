@@ -2,17 +2,15 @@
 .Synopsis
    Copies files from a single directory to target directory maintaining structure.
 .DESCRIPTION
-   Accepts Source, and target directory
+   Designed to accept source directory as a string, and target directoies as an array and duplicate source structure on each of the target directoies.
 .EXAMPLE
    (Get-ChildItem -Recurse -Depth 1 -Directory).FullName | Copy-Directory -SourceDirectory C:\Source
 .INPUTS
+   Source directory, target directory, and exclude file, or pattern.
 .OUTPUTS
-   With verbose switch success or failure of operation.  
+   With verbose switch success or failure of operation. c 
 .NOTES
    General notes
-   The component this cmdlet belongs to
-.ROLE
-   The role this cmdlet belongs to
 #>
 
 $Logfile = "C:\error.txt"
