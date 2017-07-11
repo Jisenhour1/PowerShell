@@ -9,8 +9,6 @@
    Source directory, target directory, and exclude file, or pattern.
 .OUTPUTS
    With verbose switch success or failure of operation. c 
-.NOTES
-   General notes
 #>
 
 $Logfile = "C:\error.txt"
