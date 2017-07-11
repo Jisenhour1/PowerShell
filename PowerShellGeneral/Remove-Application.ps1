@@ -27,7 +27,7 @@ function Remove-Application
     )
     $ErrorsHappened = $False
     Remove-Item -Path $ErrorLogFilePath -Force -ErrorAction SilentlyContinue
-    if($PSCmdlet.ShouldProcess("Copy from $SourceDirectory to $TargetDirectory"))
+    if($PSCmdlet.ShouldProcess("Uninstalling $SoftwareName"))
     {
         $app = Get-WmiObject -Class Win32_Product `
                      -Filter "Name = $SoftwareName"
@@ -39,7 +39,7 @@ function Remove-Application
         Else
         {
             $ErrorsHappened = $True
-            "Source $SourceDirectory not found"| Out-File $ErrorLogFilePath -Append
+            "Application $SoftWare not found"| Out-File $ErrorLogFilePath -Append
          }
     }
 
