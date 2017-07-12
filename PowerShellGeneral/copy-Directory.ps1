@@ -8,7 +8,7 @@
 .INPUTS
    Source directory, target directory, and exclude file, or pattern.
 .OUTPUTS
-   With verbose switch success or failure of operation. c 
+   With verbose switch success or failure of operation.  
 #>
 
 $Logfile = "C:\error.txt"
@@ -32,14 +32,21 @@ function Copy-Directory
                 HelpMessage="File name. or pattern to exlude from copy operation")]
         [string]$Exlude,
 
-        [Parameter(HelpMessage = "Path to error log")]
-        [string]$ErrorLogFilePath = $Logfile
+        [Parameter(Mandatory = $False,HelpMessage = "Path to error log")]
+        [string]$ErrorLogFilePath = $Logfile,
+
+        [Parameter(HelpMessage = "Set to true logfile is deleted and recreated.  False appends all errors")]
+        [switchparameter]$StandaloneMode = $True
     )
     BEGIN 
     {
         
         $ErrorsHappened = $False
-        Remove-Item -Path $ErrorLogFilePath -Force -ErrorAction SilentlyContinue
+        if($StandaloneMode -ne $False)
+        {
+            Remove-Item -Path $ErrorLogFilePath -Force -ErrorAction SilentlyContinue
+        }
+        
         if (!(Test-Path $SourceDirectory ))
         {
             Write-Verbose "$SourceDirectory not found"

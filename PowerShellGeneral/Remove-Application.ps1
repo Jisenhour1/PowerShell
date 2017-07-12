@@ -23,10 +23,17 @@ function Remove-Application
         [string] $SoftwareName,
 
         [Parameter(HelpMessage = "Path to error log")]
-        [string]$ErrorLogFilePath = $Logfile
+        [string]$ErrorLogFilePath = $Logfile,
+
+
+        [Parameter(HelpMessage = "Set to true logfile is deleted and recreated.  False appends all errors")]
+        [switchparameter]$StandaloneMode = $True
     )
     $ErrorsHappened = $False
-    Remove-Item -Path $ErrorLogFilePath -Force -ErrorAction SilentlyContinue
+    if($StandaloneMode -eq $True)
+    {
+        Remove-Item -Path $ErrorLogFilePath -Force -ErrorAction SilentlyContinue
+    }
     if($PSCmdlet.ShouldProcess("Uninstalling $SoftwareName"))
     {
         $app = Get-WmiObject -Class Win32_Product `
